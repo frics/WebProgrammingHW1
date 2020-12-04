@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/main.css">
+   </head>
+  <body>
+    <div class="container">
+      <header>
+        <ul>
+          <li><a href="/">MAIN</a></li>
+    
+          <li><a href="/about">ABOUT</a></li>
+    
+          <li><a href="/board">BOARD</a></li>
+    
+          <li><a href="/gallery">GALLERY</a></li>
+        </ul>
+      </header>
+
+      <div class ="profile">
+        { if user and user.id %}
+          <div class="user-name">{{'안녕하세요! ' + user.nick + '님'}}</div>
+          <input id="my-id" type="hidden" value="{{user.id}}">
+          <a id ="logout" href="/auth/logout" class="btn">로그아웃</a>
+        {% else %}
+          <form id="login-form" action="/auth/login" method="post">
+            <div class="input-group">
+              <label for="id">아이디</label>
+              <input id="id" type="id" name="id" required autofocus>
+            </div>
+            <div class="input-group">
+              <label for="password">비밀번호</label>
+              <input id="password" type="password" name="password" required>
+            </div>
+            <a id="join" href="/join" class="btn">회원가입</a>
+            <button id = "login" type="submit" class="btn">로그인</button>
+          </form>
+
+      </div>
+    </div>
+  </body>
+</html>
