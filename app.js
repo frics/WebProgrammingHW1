@@ -5,6 +5,7 @@ const session = require('express-session');
 const dotenv = require('dotenv');
 const path = require('path');
 const nunjucks = require('nunjucks');
+const passport = require('passport');
 
 //멀티파트 데이터 형식 전송을 위해 사용(이미지, 동영상)
 //나중에 이미지 업로드 기능할때 마저 구현
@@ -35,14 +36,20 @@ const upload = multer({
 //.env파일을 읽어서 process.env로 만든다.
 //여러 비밀 키들을 .env에 저장하여 꺼내서 사용 
 dotenv.config();
+const passportConfig = require('./passport');
 const app = express();
+//monggo DB 연결 
+const connect = require('./models');
 //라우터 선언 
 const mainRouter = require('./routes');
-const aboutRouter = require('./routes/about');
-const boardRouter = require('./routes/board');
-const galleryRouter = require('./routes/gallery');
+const authRouter = require('./routes/auth');
+//const aboutRouter = require('./routes/about');
+//const boardRouter = require('./routes/board');
+//const galleryRouter = require('./routes/gallery');
 
 const testRouter = require('./routes/test');
+connect();
+
 //실행될 포트 지정
 app.set('port', process.env.PORT || 3000);
 
@@ -82,12 +89,18 @@ app.use(session({
         name : 'session-cookie',
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 //main 라우터 경로 연결
 app.use('/', mainRouter);
+app.use('/auth', authRouter);
+
 // about 라우터 경로 연결
-app.use('/about', aboutRouter);
-app.use('/board', boardRouter);
-app.use('/gallery', galleryRouter);
+//app.use('/about', aboutRouter);
+//app.use('/board', boardRouter);
+//app.use('/gallery', galleryRouter);
 
 //test 라우터
 app.use('/test', testRouter);
@@ -111,9 +124,12 @@ app.get('/', (req, res) => {
 });*/
 //에러처리 미들웨어
 app.use((err, req, res, next) => {
+        res.locals.message = err.message;
+        res.locals.error = process.env.NODE_ENV !== 'production' ? err: {};
+        res.status(err.status || 500);
         console.error(err);
         //에러에 따라 http상태 코드 지정
-        res.status(500).send(err.message);
+        res.render('error');
 });
 /*
 app.use((req, res, next) => {
