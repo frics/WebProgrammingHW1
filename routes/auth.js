@@ -20,7 +20,7 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
       UserPassword: hash,
     });
     console.log('메인으로 간다.');
-    return res.redirect('/');
+    return res.redirect('./');
   } catch (error) {
     console.error(error);
     return next(error);

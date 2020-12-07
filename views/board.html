@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<body>
+    <div class="timeline">
+      {% if user %}
+        <div>
+          <form id="upload-form" action="/board" method="post">
+            <div class="input-group">
+               <label for="id">제목</label>
+              <input id="title" name="title" required autofocus>
+            </div>
+            <div class="input-group">
+               <label for="content">내용</label>
+               <textarea id="content" name="content" maxlength="140"></textarea>
+             </div>
+            <div>
+              <button id="upload-btn" type="submit" class="btn">등록</button>
+            </div>
+          </form>
+        </div>
+      {% endif %}
+      <div class="twits">
+        {% for board in boards %}
+          <div class="twit">
+            <input type="hidden" value="{{board.User.UserId}}" class="twit-user-id">
+            <input type="hidden" value="{{board.UserId}}" class="twit-id">
+            <div class="twit-author">{{board.title}}</div>
+            <div class="twit-author">{{board.writer}}</div>
+            <div class="twit-author">{{board.createdAt}}</div>
+            <div class="twit-content">{{board.content}}</div>
+            {% if board.writer === user.UserId %}
+               <button class="modify">수정 </button>
+               <form id='delete' action="/board/delete" method="post">
+                  <button id="delete-btn" type="submit" class="btn">삭제 </button>
+                  <script>
+                     function btnClick()
+                  </script>
+               </form>
+               
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+{% endblock %}
+
+
+{% block script %}
+  <script>
+    document.querySelectorAll('.delete').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const myId = document.querySelector('#my-id');
+        if (myId) {
+          const userId = tag.parentNode.querySelector('.twit-user-id').value;
+          if (userId !== myId.value) {
+            if (confirm('팔로잉하시겠습니까?')) {
+              axios.post(`/board/delete`)
+                .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          }
+        }
+      });
+    });
+  </script>
+{% endblock %}
+

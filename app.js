@@ -11,23 +11,6 @@ const passport = require('passport');
 //나중에 이미지 업로드 기능할때 마저 구현
 const multer = require('multer');
 
-const upload = multer({
-        //저장 공간 정보 
-        //하드디스크에 업로드 파일 저장
-        storage : multer.diskStorage({
-                //저장 경로
-                destination(req, file, done){
-                        done(null, 'uploads/');
-                },
-                //저장할 파일 이름, 날짜, 확장자
-                filename(req,res, done){
-                        const ext = path.extname(file.originalname);
-                        done(null, path.basename(file.originalname, ext) + Date.now() + ext);
-                },
-        }),
-        //파일 개수, 파일 사이즈 제한
-        limit: { fileSize : 5*1024*1024},
-});
 
 //버퍼 형태의 데이터나 텍스트 형태일 경우 body-parser를 이용
 //const bodyParser = require('body-parser');
@@ -43,12 +26,14 @@ const connect = require('./models');
 //라우터 선언 
 const mainRouter = require('./routes');
 const authRouter = require('./routes/auth');
-//const aboutRouter = require('./routes/about');
-//const boardRouter = require('./routes/board');
-//const galleryRouter = require('./routes/gallery');
+const aboutRouter = require('./routes/about');
+const boardRouter = require('./routes/board');
+const galleryRouter = require('./routes/gallery');
 
 const testRouter = require('./routes/test');
 connect();
+
+passportConfig(); // 패스포트 설정
 
 //실행될 포트 지정
 app.set('port', process.env.PORT || 3000);
@@ -67,6 +52,7 @@ app.use(morgan('dev'));
 //static은 정적인 파일들의 경로를 제공해준다.
 //요청주소와 실제 주소를 다르게 해서 보안성에 도움을 준다. 
 app.use('/', express.static(path.join(__dirname, 'public')));
+app.use('/img', express.static(path.join(__dirname, 'uploads')));
 
 //json 타입의 요청이 들어왔을때 해석해준다.
 app.use(express.json());
@@ -98,9 +84,9 @@ app.use('/', mainRouter);
 app.use('/auth', authRouter);
 
 // about 라우터 경로 연결
-//app.use('/about', aboutRouter);
-//app.use('/board', boardRouter);
-//app.use('/gallery', galleryRouter);
+app.use('/about', aboutRouter);
+app.use('/board', boardRouter);
+app.use('/gallery', galleryRouter);
 
 //test 라우터
 app.use('/test', testRouter);

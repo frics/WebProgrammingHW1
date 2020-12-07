@@ -23,15 +23,4 @@ router.get('/', async (req, res, next) => {
     });
 });
 
-/*
-router.get('/', (req, res) => {
-  // res.send('HELLO, EXPRESS');
-  res.render('main', {});
-});
-*/
-/*
-router.get('/join', isNotLoggedIn, (req, res) => {
-  // res.send('HELLO, EXPRESS');
-  res.render('join', { title: '회원가입'});
-});*/
 module.exports = router;

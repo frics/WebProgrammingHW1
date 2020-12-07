@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<body>
+    <div class="timeline">
+      {% if user %}
+        <div>
+          <form id="upload-form" action="/gallery" method="post" enctype="multipart/form-data">
+            <div class="input-group">
+              <textarea id="content" name="content" maxlength="140"></textarea>
+            </div>
+            <div class="img-preview">
+              <img id="img-preview" src="" style="display: none;" width="250" alt="미리보기">
+              <input id="img-url" type="hidden" name="url">
+            </div>
+            <div>
+              <label id="img-label" for="img">사진 업로드</label>
+              <input id="img" type="file" accept="image/*">
+              <button id="btn" type="submit" class="btn">등록</button>
+            </div>
+          </form>
+        </div>
+      {% endif %}
+      <div class="twits">
+        {% for twit in twits %}
+          <div class="twit">
+            <input type="hidden" value="{{twit.User.UserId}}" class="twit-user-id">
+            <input type="hidden" value="{{twit.UserId}}" class="twit-id">
+            <div class="twit-author">{{twit.writer}}</div>
+            <div class="twit-content">{{twit.content}}</div>
+            <div class="twit-author">{{twit.User.createAt}}</div>
+            {% if twit.img %}
+              <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+{% endblock %}
+
+{% block script %}
+  <script>
+    if (document.getElementById('img')) {
+      document.getElementById('img').addEventListener('change', function(e) {
+        const formData = new FormData();
+        console.log(this, this.files);
+        formData.append('img', this.files[0]);
+        console.log('hello');
+        axios.post('/gallery/img', formData)
+          .then((res) => {
+            document.getElementById('img-url').value = res.data.url;
+            document.getElementById('img-preview').src = res.data.url;
+            document.getElementById('img-preview').style.display = 'inline';
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+    };
+  </script>
+{% endblock %}
