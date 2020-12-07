@@ -23,51 +23,22 @@
       <div class="twits">
         {% for board in boards %}
           <div class="twit">
-            <input type="hidden" value="{{board.User.UserId}}" class="twit-user-id">
-            <input type="hidden" value="{{board.UserId}}" class="twit-id">
+            
             <div class="twit-author">{{board.title}}</div>
             <div class="twit-author">{{board.writer}}</div>
             <div class="twit-author">{{board.createdAt}}</div>
             <div class="twit-content">{{board.content}}</div>
             {% if board.writer === user.UserId %}
-               <button class="modify">수정 </button>
-               <form id='delete' action="/board/delete" method="post">
-                  <button id="delete-btn" type="submit" class="btn">삭제 </button>
-                  <script>
-                     function btnClick()
-                  </script>
-               </form>
-               
+            <button class="modify">수정 </button>
+            <form method="post" action="/board/delete">
+               <input name="_id" type="hidden" value="{{ board._id }}">
+               <input type = "submit" value= "글 삭제">
+           </form>
             {% endif %}
           </div>
         {% endfor %}
       </div>
     </div>
   </body>
-{% endblock %}
-
-
-{% block script %}
-  <script>
-    document.querySelectorAll('.delete').forEach(function(tag) {
-      tag.addEventListener('click', function() {
-        const myId = document.querySelector('#my-id');
-        if (myId) {
-          const userId = tag.parentNode.querySelector('.twit-user-id').value;
-          if (userId !== myId.value) {
-            if (confirm('팔로잉하시겠습니까?')) {
-              axios.post(`/board/delete`)
-                .then(() => {
-                  location.reload();
-                })
-                .catch((err) => {
-                  console.error(err);
-                });
-            }
-          }
-        }
-      });
-    });
-  </script>
 {% endblock %}
 

@@ -22,15 +22,22 @@
         </div>
       {% endif %}
       <div class="twits">
-        {% for twit in twits %}
+        {% for gallery in galleris %}
           <div class="twit">
-            <input type="hidden" value="{{twit.User.UserId}}" class="twit-user-id">
-            <input type="hidden" value="{{twit.UserId}}" class="twit-id">
-            <div class="twit-author">{{twit.writer}}</div>
-            <div class="twit-content">{{twit.content}}</div>
-            <div class="twit-author">{{twit.User.createAt}}</div>
-            {% if twit.img %}
-              <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
+            <input type="hidden" value="{{gallery.User.UserId}}" class="twit-user-id">
+            <input type="hidden" value="{{gallery.UserId}}" class="twit-id">
+            <div class="twit-author">{{gallery.writer}}</div>
+            <div class="twit-author">{{gallery.createdAt}}</div>
+            <div class="twit-content">{{gallery.content}}</div>
+            {% if gallery.img %}
+              <div class="twit-img"><img src="{{gallery.img}}" alt="섬네일"></div>
+            {% endif %}
+            {% if gallery.writer === user.UserId %}
+            <button class="modify">수정 </button>
+            <form method="post" action="/gallery/delete">
+               <input name="_id" type="hidden" value="{{ gallery._id }}">
+               <input type = "submit" value= "글 삭제">
+           </form>
             {% endif %}
           </div>
         {% endfor %}

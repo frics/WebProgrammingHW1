@@ -7,33 +7,24 @@ const path = require('path');
 const nunjucks = require('nunjucks');
 const passport = require('passport');
 
-//멀티파트 데이터 형식 전송을 위해 사용(이미지, 동영상)
-//나중에 이미지 업로드 기능할때 마저 구현
-const multer = require('multer');
-
-
-//버퍼 형태의 데이터나 텍스트 형태일 경우 body-parser를 이용
-//const bodyParser = require('body-parser');
 
 
 //.env파일을 읽어서 process.env로 만든다.
 //여러 비밀 키들을 .env에 저장하여 꺼내서 사용 
 dotenv.config();
-const passportConfig = require('./passport');
-const app = express();
-//monggo DB 연결 
-const connect = require('./models');
 //라우터 선언 
 const mainRouter = require('./routes');
 const authRouter = require('./routes/auth');
 const aboutRouter = require('./routes/about');
 const boardRouter = require('./routes/board');
 const galleryRouter = require('./routes/gallery');
+const passportConfig = require('./passport');
 
-const testRouter = require('./routes/test');
-connect();
-
+const app = express();
 passportConfig(); // 패스포트 설정
+//monggo DB 연결 
+const connect = require('./models');
+connect();
 
 //실행될 포트 지정
 app.set('port', process.env.PORT || 3000);
@@ -51,15 +42,12 @@ app.use(morgan('dev'));
 
 //static은 정적인 파일들의 경로를 제공해준다.
 //요청주소와 실제 주소를 다르게 해서 보안성에 도움을 준다. 
-app.use('/', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/img', express.static(path.join(__dirname, 'uploads')));
-
 //json 타입의 요청이 들어왔을때 해석해준다.
 app.use(express.json());
-
 //객체 형태 데이터의 중첩을 허용하지 않는다. 
 app.use(express.urlencoded({ extended : false}));
-
 //요청 헤더의 쿠키를 해석
 //쿠키의 비밀키를 붙여줘야한다.
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -78,18 +66,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 //main 라우터 경로 연결
 app.use('/', mainRouter);
 app.use('/auth', authRouter);
-
 // about 라우터 경로 연결
 app.use('/about', aboutRouter);
 app.use('/board', boardRouter);
 app.use('/gallery', galleryRouter);
 
-//test 라우터
-app.use('/test', testRouter);
 
 //라우터로 지정되지 않은 경로가 들어왔을떄
 app.use((req, res, next) => {
