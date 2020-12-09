@@ -3,7 +3,8 @@ exports.isLoggedIn = (req, res, next) => {
     next();
   } else {
     res.status(403);
-    res.send('<script type="text/javascript">alert("로그인이 필요합니다.");</script>');
+    const message= encodeURIComponent('로그인이 필요합니다.');
+    res.redirect(`./?loginError=${message}`);
   }
 };
 

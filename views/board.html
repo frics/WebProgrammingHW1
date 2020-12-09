@@ -3,9 +3,8 @@
 {% block content %}
 <body>
   <div class="container bootstrap snippets bootdey" style="margin-top: 60px;">
-    {% if user %}
+   
       <a id="posting" href="/board/post" class="btn btn-default" style=" float: right; margin-bottom: 10px;">글쓰기</a>
-    {% endif %}
 
     {% for board in boards %}
     <div class="row">

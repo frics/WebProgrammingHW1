@@ -7,12 +7,9 @@ const router = express.Router();
 
 const { isLoggedIn } = require('./middlewares');
 
-router.get('/post', async(req,res,next)=>{
-    try{
-      res.render('post', {});
-    }catch{
-      res.send('<script type="text/javascript">alert("오류발생");</script>');
-    }
+router.get('/post', isLoggedIn, async(req,res,next)=>{
+   
+      res.render('post', {});    
 });
 
 router.post('/', isLoggedIn, async (req, res, next) => {
