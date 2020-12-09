@@ -4,13 +4,13 @@
 {% block content %}
   <div class="container">
     <div class="profile">
-    <form id="join-form" action="/auth/join" method="post">
-      <div class="input-group">
-        <label for="join-id">아이디</label>
+    <form id="join-form" action="/auth/join" method="post" class="form-inline">
+      <div class="form-group">
+        <label class="sr-only" for="join-id">아이디</label>
         <input id="join-id" type="text" name="UserId">
       </div>
-      <div class="input-group">
-        <label for="join-nick">닉네임</label>
+      <div class="form-group">
+        <label class="sr-only" for="join-nick">닉네임</label>
         <input id="join-nick" type="text" name="UserName">
       </div>
       <div class="input-group">

@@ -7,20 +7,17 @@ router.use((req, res, next) => {
    res.locals.user = req.user;
    next();
 });
-
+/*
 router.get('/profile', isLoggedIn, (req, res) => {
   res.render('profile', { title: 'ABOUT' });
-});
+});*/
 
 router.get('/join', isNotLoggedIn, (req, res) => {
   res.render('join', { title: '회원가입' });
 });
 
 router.get('/', async (req, res, next) => {
-  
-    res.render('main', {
-      title: 'HW1 AT routes/index.js',
-    });
+  res.render('main', {});
 });
 
 module.exports = router;

@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<body>
-    <div class="timeline">
+
+    <div class="timeline" style="margin-top: 50px; float: center;">
       {% if user %}
         <div>
           <form id="upload-form" action="/gallery" method="post" enctype="multipart/form-data">
@@ -43,7 +43,7 @@
         {% endfor %}
       </div>
     </div>
-  </body>
+  
 {% endblock %}
 
 {% block script %}

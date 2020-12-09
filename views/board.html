@@ -2,24 +2,42 @@
 
 {% block content %}
 <body>
-    <div class="timeline">
-      {% if user %}
-        <div>
-          <form id="upload-form" action="/board" method="post">
-            <div class="input-group">
-               <label for="id">제목</label>
-              <input id="title" name="title" required autofocus>
+  <div class="container bootstrap snippets bootdey" style="margin-top: 60px;">
+    {% if user %}
+      <a id="posting" href="/board/post" class="btn btn-default" style=" float: right; margin-bottom: 10px;">글쓰기</a>
+    {% endif %}
+
+    {% for board in boards %}
+    <div class="row">
+        <form name="detail" action="/board/page" method="POST">
+          <input type="hidden" name="title" value="{{board.title}}" />
+          <input type="hidden" name="title" value="{{board.content}}" />
+          <input type="hidden" name="title" value="{{board.writer}}" />
+          <input type="hidden" name="title" value="{{board.createdAt}}" />
+        </form>
+      
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="well blog">
+              <a href="/board/page" onclick="javascript:document.detail.submit();"></a>
+                    <div class="date primary">
+                        
+                        <span class="blog-date">{{board.writer}}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div class="blog-details">
+                                <h2>{{board.title}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
-            <div class="input-group">
-               <label for="content">내용</label>
-               <textarea id="content" name="content" maxlength="140"></textarea>
-             </div>
-            <div>
-              <button id="upload-btn" type="submit" class="btn">등록</button>
-            </div>
-          </form>
         </div>
-      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+    <div class="timeline">
       <div class="twits">
         {% for board in boards %}
           <div class="twit">
@@ -41,4 +59,3 @@
     </div>
   </body>
 {% endblock %}
-
