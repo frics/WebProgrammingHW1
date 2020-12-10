@@ -74,8 +74,7 @@ router.post('/delete',isLoggedIn, async(req, res, next)=>{
 router.get('/', async (req, res, next) => {
   try {
     const board = await Board.find({});
-    console.log(board);
-    console.log(moment(board.createdAt).format('MMMM Do YYYY, h:mm:ss a'));
+
     res.render('board', {
       boards: board,
     });
