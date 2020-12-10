@@ -2,36 +2,37 @@
 
 {% block content %}
 <body>
-  <div class="container bootstrap snippets bootdey" style="margin-top: 60px;">
+  <div class="container bootstrap snippets bootdey" style="margin-top: 60px; ">
    
       <a id="posting" href="/board/post" class="btn btn-default" style=" float: right; margin-bottom: 10px;">글쓰기</a>
 
     {% for board in boards %}
     <div class="row">
-        <form name="detail" action="/board/page" method="POST">
+        <form name="detail"  method="POST">
           <input type="hidden" name="title" value="{{board.title}}" />
-          <input type="hidden" name="title" value="{{board.content}}" />
-          <input type="hidden" name="title" value="{{board.writer}}" />
-          <input type="hidden" name="title" value="{{board.createdAt}}" />
+          <input type="hidden" name="content" value="{{board.content}}" />
+          <input type="hidden" name="wrtiter" value="{{board.writer}}" />
+          <input type="hidden" name="createdAt" value="{{board.createdAt}}" />
         </form>
+        
       
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="well blog">
-              <a href="/board/page" onclick="javascript:document.detail.submit();"></a>
-                    <div class="date primary">
-                        
-                        <span class="blog-date">{{board.writer}}</span>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                            <div class="blog-details">
-                                <h2>{{board.title}}</h2>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <div class="well blog">
+                <a id="detail" href="/board/page" style= "text-decoration: none;">
+                      <div class="date primary">
+                          
+                          <span class="blog-date">{{board.writer}}</span>
+                      </div>
+                      <div class="row">
+                          <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                              <div class="blog-details">
+                                  <h2>{{board.title}}</h2>
+                              </div>
+                          </div>
+                      </div>
+                  </a>
+              </div>
+          </div>
     </div>
     {% endfor %}
   </div>

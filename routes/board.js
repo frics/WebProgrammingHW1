@@ -12,6 +12,14 @@ router.get('/post', isLoggedIn, async(req,res,next)=>{
       res.render('post', {});    
 });
 
+router.get('/page', async(req, res, next) =>{
+  console.log(req.body);
+  res.render('page', {
+    //postTitle: req.body.title,
+
+  });
+})
+
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     console.log("checkchekccdashfasdfsdfasfasdfas!!");
