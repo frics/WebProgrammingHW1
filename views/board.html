@@ -10,61 +10,31 @@
 
     {% for board in boards %}
     <div class="row">
-        <form name="detail"  method="POST">
-          <input type="hidden" name="title" value="{{board.title}}" />
-          <input type="hidden" name="content" value="{{board.content}}" />
-          <input type="hidden" name="wrtiter" value="{{board.writer}}" />
-          <input type="hidden" name="createdAt" value="{{board.createdAt}}" />
-        </form>
-        
-      
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <a id="detail" style= "text-decoration: none;"
-                data-toggle="modal" data-target="#pageModal" 
-                data-title="{{board.title}}"  
-                data-content="{{board.content}}" 
-                data-writer="{{board.writer}}" 
-                data-date="{{board.createdAt}}" >
-              <div class="well blog">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+              <div class="well blog" >
                 
-                      <div class="date primary">
-                          <span class="blog-date">{{board.writer}}</span>
-                      </div>
-                      <div class="row">
-                          <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                              <div class="blog-details">
-                                  <h2>{{board.title}}</h2>
-                              </div>
-                          </div>
-                      </div>
-                  </a>
+                <div class="date primary">
+                    <span class="blog-date">{{board.writer}}</span>
+                    <form name="detail"  action="/board/page" method="POST">
+                      <input type="hidden" name="_id" value="{{board._id}}" />
+                      <button type="submit" class="btn btn-default" style=" float: right;">자세히</button>
+                    </form>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div class="blog-details">
+                            <h2 >{{board.title}}</h2>
+                        </div>
+                    </div>
+                </div>
+                
               </div>
           </div>
+       
     </div>
     {% endfor %}
   </div>
 
-    <div class="timeline">
-      <div class="twits">
-        {% for board in boards %}
-          <div class="twit">
-            
-            <div class="twit-author">{{board.title}}</div>
-            <div class="twit-author">{{board.writer}}</div>
-            <div class="twit-author">{{board.createdAt}}</div>
-            <div class="twit-content">{{board.content}}</div>
-            {% if board.writer === user.UserId %}
-           
-            <form method="post" action="/board/delete">
-               <input name="_id" type="hidden" value="{{ board._id }}">
-               <input type = "submit" value= "글 삭제">
-           </form>
-           <button id="modify">수정 </button>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
-    </div>
 
   <div id="postModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -77,7 +47,7 @@
               <h4>글쓰기</h4>
             </div>
             <div class="modal-body">
-              <form id ="post-form" action="/board" method="post">
+              <form id ="post-form" action="/board/post" method="post">
                 <div class="form-group">
                   <label for="title">제목 <span class="require">*</span></label>
                   <input id ="title" type="text" class="form-control" name="title" placeholder="제목을 입력해주세요."/>
@@ -98,45 +68,24 @@
     </div>
   </div> <!--글쓰기 modal-->
 
-    <div id="pageModal" class="modal fade" role="dialog">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="modal-content">
-            <div class="modal-body" style="margin-left: 20px; margin-right: 20px;">
-              <div class="row">
-                <!-- Post Content Column -->   
-                  <!-- Title -->
-                  <button type="button" class="close" data-dismiss="modal"> &times;</button>
-                 
-                  <form method="post" action="/board/delete">
-                    <input name="titleID" id="titleID" type="text" value="">
-                    <input type = "submit" value= "글 삭제">
-                  </form>
-                  <a id="modify" href="/board/modify" class="btn btn-default" style=" margin-bottom: 10px;">수정</a>
-                  <input type = "submit" value= "글 삭제" class="btn btn-default" style="margin-bottom: 10px;">
-               
-                  <h1 class="mt-4" id="titleID" name="titleID"></h1>
-                
-                  <!-- Author -->
-                  <div class="lead" id="writerID"></div>
-                  <div class="lead" id="dateID"></div>
-                  <hr>
-                  <!-- Date/Time -->
-                  <!-- Post Content -->
-                  <p class="lead" id="contentID"></p>
-           
-                  <hr>
-               
-              </div>
-            </div>
-        </div>
-      </div>
-    </div>
-
+    
 </body>
 {% endblock %}
 {% block script %}
 <script>
-  
+ /*
+  function addBtnEvent(e) {
+    document.getElementById('{{board._id}}').submit();
+  }
+  document.getElementsByName('btn').forEach(function (btn) {
+      btn.addEventListener('click', addBtnEvent);
+      
+  });
+/*
+  $('#btn').click(function(){
+    $('#frm').submit();
+  })
+/*
   $('#pageModal').on('show.bs.modal',function (event) {
     var param = $(event.relatedTarget);
     var title = param.data('title');
@@ -156,6 +105,6 @@
     document.getElementById('contentID').innerHTML = content;
     document.getElementById('dateID').innerHTML = date;
   });
-
+*/
 </script>
 {% endblock %}

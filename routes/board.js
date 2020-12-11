@@ -12,22 +12,27 @@ router.get('/post', isLoggedIn, async(req,res,next)=>{
       res.render('post', {});    
 });
 
-router.get('/page', async(req, res, next) =>{
-  console.log(req.body);
-  res.render('page', {
-    //postTitle: req.body.title,
+router.post('/page', async(req, res, next) =>{
+  try {
+    console.log(req.body);
+    var post = await Board.findOne({ _id: req.body._id});
+    console.log(post);
 
-  });
+    const date = moment(post.createdAt).format('YYYY MMMM Do , hh:mm');
+    
+    console.log(date);
+    res.render('page', {
+      board : post,
+      date: date,
+    });
+  }catch (err) {
+    console.error(err);
+    next(err);
+  }
 })
 
-router.post('/', isLoggedIn, async (req, res, next) => {
+router.post('/post', isLoggedIn, async (req, res, next) => {
   try {
-    console.log("checkchekccdashfasdfsdfasfasdfas!!");
-    console.log(req.user);
-    console.log(req.body);
-    console.log(req.body.title);
-    console.log(req.user.UserId);
-    console.log(req.body.content);
     const board = await Board.create({
       title: req.body.title,
       writer: req.user.UserId,
@@ -55,12 +60,31 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.post('/modify',isLoggedIn, async(req, res, next)=>{
+  try{
+    console.log("수정할 내용 확인");
+    console.log(req.body);
+     const board = await Board.update(
+       { _id:req.body._id },
+       { title: req.body.title, content: req.body.content }
+    );
+    //res.json(board);
+    req.par = req.body._id;
+    res.redirect(307, '/board/page');
+  }catch(err){
+    console.error(err);
+    next(err);
+  }
+    
+});
+
 
 router.post('/delete',isLoggedIn, async(req, res, next)=>{
   try{
     console.log("삭제할 내용 확인");
     console.log(req.body);
     const board = await Board.deleteOne({_id:req.body._id});
+   
     //res.json(board);
     res.redirect('/board');
   }catch(err){
