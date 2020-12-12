@@ -2,47 +2,63 @@
 
 {% block content %}
 
-    <div class="timeline" style="margin-top: 50px; float: center;">
-      {% if user %}
-        <div>
-          <form id="upload-form" action="/gallery" method="post" enctype="multipart/form-data">
-            <div class="input-group">
-              <textarea id="content" name="content" maxlength="140"></textarea>
-            </div>
-            <div class="img-preview">
-              <img id="img-preview" src="" style="display: none;" width="250" alt="미리보기">
-              <input id="img-url" type="hidden" name="url">
-            </div>
-            <div>
-              <label id="img-label" for="img">사진 업로드</label>
-              <input id="img" type="file" accept="image/*">
-              <button id="btn" type="submit" class="btn">등록</button>
-            </div>
-          </form>
-        </div>
-      {% endif %}
-      <div class="twits">
-        {% for gallery in galleris %}
-          <div class="twit">
-            <input type="hidden" value="{{gallery.User.UserId}}" class="twit-user-id">
-            <input type="hidden" value="{{gallery.UserId}}" class="twit-id">
-            <div class="twit-author">{{gallery.writer}}</div>
-            <div class="twit-author">{{gallery.createdAt}}</div>
-            <div class="twit-content">{{gallery.content}}</div>
-            {% if gallery.img %}
-              <div class="twit-img"><img src="{{gallery.img}}" alt="섬네일"></div>
-            {% endif %}
-            {% if gallery.writer === user.UserId %}
-            <button class="modify">수정 </button>
-            <form method="post" action="/gallery/delete">
-               <input name="_id" type="hidden" value="{{ gallery._id }}">
-               <input type = "submit" value= "글 삭제">
-           </form>
-            {% endif %}
+  <div class="container" style="margin-top: 60px;" >
+
+    <a id="posting" data-toggle="modal" data-target="#postModal"  class="btn btn-default" style=" float: right; margin-bottom: 10px;">
+    업로드
+    </a>
+
+    {% for gallery in galleris %}
+    <div class="gallery-item">
+      <div class="square bg" style="background-image: url('{{gallery.img}}');">
+        <div class="gallery-item-info">
+          <div class="gallery-item-likes">
+            <h1 class="visually-hidden">BY {{gallery.writer}}</h1>
           </div>
-        {% endfor %}
+        </div>
       </div>
     </div>
+    {% endfor %}
+
+  </div>
+
+
+  <div id="postModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="modal-content">
+        
+            <div class="modal-header ">
+              <button type="button" class="close" data-dismiss="modal"> &times;</button>
+              <h4>글쓰기</h4>
+            </div>
+            <div class="modal-body">
+              
+              <form id="upload-form" action="/gallery" method="post" enctype="multipart/form-data">
+                <div class="img-preview">
+                  <img id="img-preview" src="" style="display: none;" width="100%" alt="미리보기">
+                  <input id="img-url" type="hidden" name="url">
+                 
+                  <input id="img" type="file" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="description">내용</label>
+                    <textarea id="content" style="resize:none;" rows="5" class="form-control" name="content" ></textarea>
+                </div>
+                <div class="form-group">
+                    <p><span class="require">*</span> - 필수입니다</p>
+                </div>
+                <div>
+                  <button type="submit" class="btn btn-info btn-xs">등록</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   
 {% endblock %}
 
