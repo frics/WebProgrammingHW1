@@ -45,6 +45,10 @@
             </ul>
             {% if user and user.UserId %}
             <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a>MESSAGE</a>
+              </li>
+            
               <li><a>{{user.UserName + '님'}}</a></li>
               <li><a id ="logout" href="/auth/logout">로그아웃</a></li>
             </ul>
@@ -97,6 +101,34 @@
     {% block script %}
     {% endblock %}
   </body>
+  <footer>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="list-inline" >
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="/about">About</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="/board">Board</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="/gallery">Gallery</a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted small">This Project in https://github.com/frics/WebProgrammingHW1</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
 </html>
 
 

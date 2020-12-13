@@ -1,2 +1,74 @@
 {% extends 'layout.html' %}
 
+{% block content %}
+
+<div class="container bootstrap snippets bootdey" style="margin-top: 60px; ">
+
+   <div class="row" style="float: right; margin-bottom: 10px;">
+      <form id="hashtag-form" action="/search">
+         <input type="text" name="search" placeholder="검색">
+         <button class="btn">검색</button>
+      </form>
+   </div>
+   
+   {% for board in boards %}
+   <div class="row">
+   <form id="{{board._id}}"  action="/board/page" method="POST">
+      <input type="hidden" name="_id" value="{{board._id}}" />
+      <a onclick="document.getElementById('{{board._id}}').submit();">
+         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+            <div class="well blog" >
+               
+               <div class="date primary">
+                  <span class="blog-date">{{board.writer}}</span>  
+               </div>
+               <div class="row">
+                  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                     <div class="blog-details">
+                           <h2 >{{board.title}}</h2>
+                     </div>
+                  </div>
+               </div>
+               
+            </div>
+         </div>
+      </a>
+      </form>
+   </div>
+   {% endfor %}
+</div>
+{% if galleris or boards %}
+<div class="container">
+   <hr>
+</div>
+{% endif %}
+<div class="container">
+   {% for gallery in galleris %}
+   <form id="{{gallery._id}}" action="/gallery/page" method="POST">
+      <input type="hidden" name="_id" value="{{gallery._id}}"/>
+      <div class="gallery-item">
+         <a onclick="document.getElementById('{{gallery._id}}').submit();">
+            <div class="square bg" style="background-image: url('{{gallery.img}}');">
+               <div class="gallery-item-info">
+                     <h1 class="visually-hidden">BY {{gallery.writer}}</h1>
+               </div>
+            </div>
+         </a>
+      </div>
+   </form>
+   {% endfor %}
+</div>
+{% if galleris or boards %}
+<hr>
+{% endif %}
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+   $('.search-button').click(function(){
+  $(this).parent().toggleClass('open');
+});
+</script>
+{% endblock %}

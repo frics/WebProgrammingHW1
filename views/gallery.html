@@ -3,13 +3,22 @@
 {% block content %}
 
   <div class="container" style="margin-top: 60px;" >
-
-    <a id="posting" data-toggle="modal" data-target="#postModal"  class="btn btn-default" style=" float: right; margin-bottom: 10px;">
+   {% if user and user.UserId %}
+    <div class="row">
+    <a id="posting" data-toggle="modal" data-target="#postModal"  class="btn btn-default" style=" float: right; margin-right: 35px;">
     업로드
     </a>
-
+  
+  </div>
+  {% endif %}  
+  
     {% for gallery in galleris %}
+    
+    <form id="{{gallery._id}}" action="/gallery/page" method="POST">
+      <input type="hidden" name="_id" value="{{gallery._id}}"/>
+    
     <div class="gallery-item">
+      <a onclick="document.getElementById('{{gallery._id}}').submit();">
       <div class="square bg" style="background-image: url('{{gallery.img}}');">
         <div class="gallery-item-info">
           <div class="gallery-item-likes">
@@ -17,7 +26,9 @@
           </div>
         </div>
       </div>
+      </a>
     </div>
+  </form>
     {% endfor %}
 
   </div>
@@ -26,19 +37,19 @@
   <div id="postModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
       <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-12 col-md-offset-2">
           <div class="modal-content">
         
             <div class="modal-header ">
               <button type="button" class="close" data-dismiss="modal"> &times;</button>
-              <h4>글쓰기</h4>
+              <h4>업로드</h4>
             </div>
             <div class="modal-body">
               
               <form id="upload-form" action="/gallery" method="post" enctype="multipart/form-data">
                 <div class="img-preview">
-                  <img id="img-preview" src="" style="display: none;" width="100%" alt="미리보기">
-                  <input id="img-url" type="hidden" name="url">
+                  <img id="img-preview" src="image.png"   alt="미리보기">
+                  <input id="img-url" type="hidden" name="url" required>
                  
                   <input id="img" type="file" accept="image/*">
                 </div>
@@ -46,9 +57,7 @@
                     <label for="description">내용</label>
                     <textarea id="content" style="resize:none;" rows="5" class="form-control" name="content" ></textarea>
                 </div>
-                <div class="form-group">
-                    <p><span class="require">*</span> - 필수입니다</p>
-                </div>
+                
                 <div>
                   <button type="submit" class="btn btn-info btn-xs">등록</button>
                 </div>
@@ -59,6 +68,8 @@
       </div>
     </div>
   </div>
+
+
   
 {% endblock %}
 
@@ -81,7 +92,7 @@
           });
       });
     };
-
+ 
 
   </script>
 {% endblock %}
