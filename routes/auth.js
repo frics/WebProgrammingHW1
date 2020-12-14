@@ -34,16 +34,14 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
       return next(authError);
     }
     if (!user) {
-      console.log("11111111111111111");
       return res.redirect(`/?loginError=${info.message}`);
     }
     return req.login(user, (loginError) => {
       if (loginError) {
-        console.log("12222222222");
         console.error(loginError);
         return next(loginError);
       }
-      return res.redirect('back');
+      return res.redirect('/');
       
     });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.

@@ -8,8 +8,6 @@ const router = express.Router();
 
 const { isLoggedIn } = require('./middlewares');
 
-
-
 router.post('/post', isLoggedIn, async (req, res, next) => {
   try {
     const board = await Board.create({
@@ -114,13 +112,13 @@ router.get('/search', async (req, res, next) => {
 
  
   if (!query) {
-    return res.redirect('/');
+    return res.redirect('/board');
   }
   try {
-    if(type === "content"){
+    if(type === "본문"){
       //내용 검색
       board = await Board.find({ content: {$regex: query}});
-    }else if(type === "writer"){
+    }else if(type === "ID"){
       //작성자 검색
       board = await Board.find({ writer: query});
     }else{

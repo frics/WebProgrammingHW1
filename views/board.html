@@ -10,9 +10,9 @@
                <form id="hashtag-form" action="/board/search"> 
                   <input type="text" name="search" placeholder="검색">
                   <select name="type"id="type" >
-                     <option value="content">본문</option>
-                     <option value="writer">작성자</option>
-                     <option value="hashtag">태그</option>
+                     <option value="본문">본문</option>
+                     <option value="ID">ID</option>
+                     <option value="#">#</option>
                   </select>
                   <button class="btn btn-default">검색</button>
                </form>
@@ -26,8 +26,14 @@
       </a>
       {% endif %}
    </div>
+
    {% if type %}
-   <h1>{{type}} : {{query}} 검색결과</h1>
+      {% if type === "#" %}
+      <h1>{{type}}{{query}} 검색결과</h1>
+      {% else %}
+      <h1>{{type}} : {{query}} 검색결과</h1>
+      {% endif %}
+      <hr>
    {% endif %}
 
     

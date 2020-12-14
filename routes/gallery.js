@@ -14,7 +14,6 @@ const router = express.Router();
 
 
 try {
-  console.log('OPEN DIR');
   fs.readdirSync('uploads');
 }catch(error){
   console.error('Cannot find uploads dir \n Create uploads dir');
@@ -153,32 +152,25 @@ router.post('/delete',isLoggedIn, async(req, res, next)=>{
     
 });
 router.get('/search', async (req, res, next) => {
-  const query = req.query.search;
-  const type = req.query.type;
-  var gallery;
- 
-  if (!query) {
-    return res.redirect('/');
-  }
   try {
-    if(type === "content"){
-      //내용 검색
-      gallery = await Gallery.find({ content: {$regex: query}});
-    }else if(type === "writer"){
-      //작성자 검색
-      gallery = await Gallery.find( { writer: query });
-    }else{
-      //HASH TAG 검색
-      const hashtag = await Hashtag.findOne({ title: query  });
-      if (hashtag) {
-        gallery = await Gallery.find( {content:{$regex: '.*#'+query+'.*'}});
-      }
+    const query = req.query.search;
+    const type = req.query.type;
+    var gallery;
+   
+    if (!query) {
+      return res.redirect('/gallery');
     }
-    
+
+    //HASH TAG 검색
+    const hashtag = await Hashtag.findOne({ title: query  });
+    if (hashtag) {
+      gallery = await Gallery.find( {content:{$regex: '.*#'+query+'.*'}});
+    }
+        
     return res.render('gallery', {
       title: `${type} | ${query} | 검색결과`,
       galleris: gallery,
-      type: type,
+      type: "#",
       query: query,
     });
 

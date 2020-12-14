@@ -3,7 +3,6 @@
 {% block content %}
 
 <div class="container bootstrap snippets bootdey" style="margin-top: 60px; ">
-
    <div class="row" style="float: right; margin-bottom: 10px;">
       <section class="search">
          <div class="inner">
@@ -11,9 +10,9 @@
                <form id="hashtag-form" action="/search"> 
                   <input type="text" name="search" placeholder="검색">
                   <select name="type"id="type" >
-                     <option value="content">본문</option>
-                     <option value="writer">작성자</option>
-                     <option value="hashtag">태그</option>
+                     <option value="본문">본문</option>
+                     <option value="ID">ID</option>
+                     <option value="#">#</option>
                   </select>
                   <button class="btn">검색</button>
                </form>
@@ -21,9 +20,22 @@
          </div>
       </section>
    </div>
+
    {% if type %}
-   <h1>{{type}} : {{query}} 검색결과</h1>
+      {% if type === "#" %}
+      <h1>{{type}}{{query}} 검색결과</h1>
+      {% else %}
+      <h1>{{type}} : {{query}} 검색결과</h1>
+      {% endif %}
+      <hr>
    {% endif %}
+
+   {% if boards %}
+   <div>
+      <h2>BOARD</h2>
+   </div>
+   {% endif %}
+
    {% for board in boards %}
    <div class="row">
    <form id="{{board._id}}"  action="/board/page" method="POST">
@@ -50,9 +62,11 @@
    </div>
    {% endfor %}
 </div>
-{% if galleris or boards %}
+{% if galleris %}
+
 <div class="container">
    <hr>
+   <h2>GALLERY</h2>
 </div>
 {% endif %}
 <div class="container">
@@ -71,9 +85,6 @@
    </form>
    {% endfor %}
 </div>
-{% if galleris or boards %}
-<hr>
-{% endif %}
 
 
 {% endblock %}

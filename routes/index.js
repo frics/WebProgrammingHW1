@@ -74,12 +74,11 @@ router.get('/search', async (req, res, next) => {
     return res.redirect('/');
   }
   try {
-    if(type === "content"){
+    if(type === "본문"){
       //내용 검색
-      
       board = await Board.find({ content: {$regex: query}});
       gallery = await Gallery.find({ content: {$regex: query}});
-    }else if(type === "writer"){
+    }else if(type === "ID"){
       //작성자 검색
     
       board = await Board.find({ writer: query});
