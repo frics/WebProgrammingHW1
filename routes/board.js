@@ -112,7 +112,7 @@ router.post('/delete',isLoggedIn, async(req, res, next)=>{
 
 router.get('/', async (req, res, next) => {
   try {
-    const board = await Board.find({});
+    const board = await Board.find({}).sort({createdAt: -1});;
 
     res.render('board', {
       title: "BOARD",

@@ -31,30 +31,50 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               <li>
-                  <a href="/">HOME</a>
+                  <a href="/">
+                    </span>HOME</a>
               </li>
               <li>
-                  <a href="/about">ABOUT</a>
+                  <a href="/about">
+                    <span class="glyphicon glyphicon-text-background" style="margin-right: 4px;"></span>ABOUT</a>
               </li>
               <li>
-                  <a href="/board">BOARD</a>
+                  <a href="/board">
+                    <span class="glyphicon glyphicon-th-list" style="margin-right: 4px;"></span>BOARD</a>
               </li>   
               <li>
-                  <a href="/gallery">GALLERY</a>
+                  <a href="/gallery">
+                    <span class="glyphicon glyphicon-picture" style="margin-right: 4px;"></span>GALLERY</a>
               </li>  
             </ul>
             {% if user and user.UserId %}
             <ul class="nav navbar-nav navbar-right">
-              <li>
-                <a>MESSAGE</a>
-              </li>
+           
             
-              <li><a>{{user.UserName + '님'}}</a></li>
-              <li><a id ="logout" href="/auth/logout">로그아웃</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> 
+                  <span class="glyphicon glyphicon-user" style="margin-right: 4px;"></span>{{user.UserName + '님'}}</a>
+                  <ul class="dropdown-menu" style="text-align: center;">
+                    <!--전송 modal-->
+                    <li><a data-toggle="modal" data-target="#messageModal">
+                      <span class="glyphicon glyphicon-envelope" style="margin-right: 4px;"></span>SEND</a>
+                    </li>
+                    <!--메세지 확인 modal-->
+                    <li><a data-toggle="modal" data-target="#boxModal">
+                      <span class="glyphicon glyphicon-inbox" style="margin-right: 4px;"></span>BOX</a>
+                    </li>
+
+                  </ul>
+              </li>
+              <li>
+                <a id ="logout" href="/auth/logout">
+                  <span class="glyphicon glyphicon-log-out" style="margin-right: 4px;"></span>LOGOUT</a>
+              </li>
             </ul>
             {% else %}
             <ul class="nav navbar-nav navbar-right">
-              <li><a data-toggle="modal" data-target="#loginModal"><span class="glyphicon glyphicon-log-in"></span>LOGIN</a></li>
+              <li><a data-toggle="modal" data-target="#loginModal">
+                <span class="glyphicon glyphicon-log-in" style="margin-right: 4px;"></span>LOGIN</a></li>
             </ul>
             {% endif %}
         </div>
@@ -82,6 +102,69 @@
                   <a id="join" href="/join" class="btn btn-info btn-xs">회원가입</a> 
               </form>
             </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="messageModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"> &times;</button>
+               <h4>MESSAGE</h4>
+              </div>
+              <div class="modal-body">
+                <form id="message-send" action="/message" method="post" >
+                  
+                    <div class="form-group">
+                      <label for="title">TO <span class="require">*</span></label>
+                      <input type="text" class="form-control" id="to" name="to" placeholer="TO" required autofocus>
+                    </div>
+                    <div class="form-group">
+                      <label for="description">MESSAGE</label>
+                      <textarea id="message" rows="3" maxlength="140" class="form-control" placeholer="MESSAGE" name="message"required></textarea>
+                    </div>
+                    <div >
+                      <button type="submit" class="btn btn-info btn-xs" >SEND</button>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="boxModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="modal-content">
+          
+              <div class="modal-header ">
+                <!---https://bootsnipp.com/snippets/662WP 참고-->
+                <button type="button" class="close" data-dismiss="modal"> &times;</button>
+                <h4>글쓰기</h4>
+              </div>
+              <div class="modal-body">
+                <div class="list-group no-margin list-message">
+                  {% for message in messages %}
+                    <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading">{{message.from}} <small>{{message.date}}</small></h4>
+                        <p class="list-group-item-text">
+                          {{message.message}}
+                        </p>
+                        <span class="label label-success pull-right">확인</span>
+                        <div class="clearfix"></div>
+                    </a>
+                    {% endfor %}
+                </div><!-- /.list-group -->
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,9 @@
 const express = require('express');
-
+const moment = require("moment");
+const Message = require('../models/message');
 const Board = require('../models/board');
 const Gallery = require('../models/gallery');
+const User = require('../models/user');
 
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const router = express.Router();
@@ -17,9 +19,42 @@ router.get('/join', isNotLoggedIn, (req, res) => {
 });
 
 router.get('/', async (req, res, next) => {
+  var message;
+  console.log("--------USER---------")
+  console.log(req.user);
+  if(req.user){
+    console.log("-----FIND MESSAGE-------")
+    message = await Message.find({ to: req.user.UserId}).sort({date: -1});;
+  }
+  console.log(message);
   res.render('main', {
-    title: "HOME"
+    title: "HOME",
+    messages: message
   });
+});
+
+router.post('/message', isLoggedIn, async(req, res, next) => {
+  try{
+    console.log(req.body);
+    console.log(req.user);
+    const exUser = await User.findOne( {UserId:req.body.to });
+    if(!exUser){
+      const message= encodeURIComponent('없는 사용자입니다.');
+      res.redirect(`./?loginError=${message}`);
+    }else{
+      var date = moment(Date.now()).format('YYYY MMMM Do , hh:mma');
+      const message = await Message.create({
+        from: req.user.UserId,
+        to: req.body.to,
+        message: req.body.message,
+        date: date
+      });
+      res.redirect('/');
+    }
+  }catch(error){
+    console.error(error);
+    next(error);
+  }
 });
 
 

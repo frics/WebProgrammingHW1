@@ -14,11 +14,11 @@ message: {
    type: String,
    required: true,
  },
-  createdAt: {
-     type: Date,
-     default: Date.now,
-  },
+ date:{
+    type: String,
+    required: true,
+ },
   
 });
 
-module.exports = mongoose.model('Hashtag', hashtagSchema);
+module.exports = mongoose.model('Message', messageSchema);
