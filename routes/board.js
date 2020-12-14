@@ -1,5 +1,6 @@
 const express = require('express');
 const moment = require("moment");
+const Message = require('../models/message');
 const Hashtag = require('../models/hashtag');
 const Board = require('../models/board');
 
@@ -81,9 +82,7 @@ router.post('/modify',isLoggedIn, async(req, res, next)=>{
         }),
       );
     }
-    //res.json(board);
-    //req.par = req.body._id;
-    //res.redirect(307, '/board/page');
+    
     res.redirect('/board');
     
   }catch(err){
@@ -96,9 +95,8 @@ router.post('/modify',isLoggedIn, async(req, res, next)=>{
 
 router.post('/delete',isLoggedIn, async(req, res, next)=>{
   try{
-    console.log("삭제할 내용 확인");
-    console.log(req.body);
-    const board = await Board.deleteOne({_id:req.body._id});
+ 
+    await Board.deleteOne({_id:req.body._id});
    
     //res.json(board);
     res.redirect('/board');
@@ -109,14 +107,57 @@ router.post('/delete',isLoggedIn, async(req, res, next)=>{
     
 });
 
+router.get('/search', async (req, res, next) => {
+  const query = req.query.search;
+  const type = req.query.type;
+  var board;
+
+ 
+  if (!query) {
+    return res.redirect('/');
+  }
+  try {
+    if(type === "content"){
+      //내용 검색
+      board = await Board.find({ content: {$regex: query}});
+    }else if(type === "writer"){
+      //작성자 검색
+      board = await Board.find({ writer: query});
+    }else{
+      //HASH TAG 검색
+      const hashtag = await Hashtag.findOne({ title: query  });
+      if (hashtag) {
+        board = await Board.find( {content:{$regex: '.*#'+query+'.*'}});
+      }
+    }
+    
+    return res.render('board', {
+      title: `${type} | ${query} | 검색결과`,
+      boards: board,
+      type: type,
+      query: query,
+    });
+
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
 
 router.get('/', async (req, res, next) => {
   try {
+    var message;
+ 
+    if(req.user){
+      message = await Message.find({ to: req.user.UserId}).sort({date: -1});;
+    }
     const board = await Board.find({}).sort({createdAt: -1});;
 
     res.render('board', {
       title: "BOARD",
       boards: board,
+      messages: message
     });
   } catch (err) {
     console.error(err);

@@ -5,7 +5,7 @@ const moment = require("moment");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
+const Message = require('../models/message');
 const Gallery = require('../models/gallery');
 const Hashtag = require('../models/hashtag');
 const { isLoggedIn } = require('./middlewares');
@@ -42,15 +42,12 @@ const upload = multer({
 });
 
 router.post('/img', isLoggedIn, upload.single('img'), (req, res) => {
-  console.log("!!!!!!!!!!!!!!!!!!!!!!!"+req.file);
   res.json({ url: `/img/${req.file.filename}` });
 });
 
 const upload2 = multer();
 router.post('/', isLoggedIn, upload2.none(), async (req, res, next) => {
   try { 
-    console.log(req.user);
-    console.log(req.body);
     const post = await Gallery.create({
       content: req.body.content,
       img: req.body.url,
@@ -62,7 +59,6 @@ router.post('/', isLoggedIn, upload2.none(), async (req, res, next) => {
       const result = await Promise.all(
         hashtags.map(async tag => {
           const check = await Hashtag.findOne({ title: tag.slice(1).toLowerCase() });
-
           if(!check){
             await Hashtag.create({ title: tag.slice(1).toLowerCase() });
           }
@@ -82,10 +78,9 @@ router.post('/', isLoggedIn, upload2.none(), async (req, res, next) => {
 
 router.post('/page', async(req, res, next)=>{
   try{
-    console.log("----------IN GALLERY PAGE-----------");
-    console.log(req.body);
+   
     var gallery = await Gallery.findOne({ _id: req.body._id});
-    console.log(gallery);
+
     if(gallery){
       const date = moment(gallery.createdAt).format('YYYY MMMM Do , hh:mm');
 
@@ -104,9 +99,6 @@ router.post('/page', async(req, res, next)=>{
 
 router.post('/modify',isLoggedIn, upload2.none(), async(req, res, next)=>{
   try{
-    console.log("----------IN MODIFY-----------");
-    console.log("수정할 내용 확인");
-    console.log(req.body);
     
      const gallery = await Gallery.updateOne(
        { _id:req.body._id },
@@ -133,14 +125,9 @@ router.post('/modify',isLoggedIn, upload2.none(), async(req, res, next)=>{
         console.error(err);
       });
     }
-    console.log("------IT IS ID------");
-    console.log(req.body._id);
-    req.params = req.body._id;
-    res.redirect(307, '/board/page');
-    /*
-    req.par = req.body._id;
-    res.redirect(307, '/gallery/page');
-   */
+  
+    res.redirect('/gallery');
+   
   }catch(err){
     console.error(err);
     next(err);
@@ -150,8 +137,7 @@ router.post('/modify',isLoggedIn, upload2.none(), async(req, res, next)=>{
 
 router.post('/delete',isLoggedIn, async(req, res, next)=>{
   try{
-    console.log("삭제할 내용 확인");
-    console.log("delete this: " +req.body.img);
+   
     const gallery = await Gallery.deleteOne({_id:req.body._id});
     
     const filePath = './uploads/' + path.basename(req.body.img);
@@ -166,15 +152,55 @@ router.post('/delete',isLoggedIn, async(req, res, next)=>{
   }
     
 });
+router.get('/search', async (req, res, next) => {
+  const query = req.query.search;
+  const type = req.query.type;
+  var gallery;
+ 
+  if (!query) {
+    return res.redirect('/');
+  }
+  try {
+    if(type === "content"){
+      //내용 검색
+      gallery = await Gallery.find({ content: {$regex: query}});
+    }else if(type === "writer"){
+      //작성자 검색
+      gallery = await Gallery.find( { writer: query });
+    }else{
+      //HASH TAG 검색
+      const hashtag = await Hashtag.findOne({ title: query  });
+      if (hashtag) {
+        gallery = await Gallery.find( {content:{$regex: '.*#'+query+'.*'}});
+      }
+    }
+    
+    return res.render('gallery', {
+      title: `${type} | ${query} | 검색결과`,
+      galleris: gallery,
+      type: type,
+      query: query,
+    });
 
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
 
 router.get('/', async (req, res, next) => {
   try {
+    var message;
+ 
+    if(req.user){
+      message = await Message.find({ to: req.user.UserId}).sort({date: -1});;
+    }
     const gallery = await Gallery.find({}).sort({createdAt: -1});
-    //console.log(gallery);
+   
     res.render('gallery', {
       title: "GALLERY",
       galleris: gallery,
+      messages: message
     });
   } catch (err) {
     console.error(err);

@@ -96,7 +96,7 @@ a {
   color: #000000; 
 }
 
-
+/**MESSAGE BOX***/
 .list-message .list-group-item {
  
   color: #000000 !important;
@@ -127,3 +127,4 @@ a {
   border-radius: 0px;
   border-bottom: 1px solid rgb(0, 0, 0) !important;
 }
+

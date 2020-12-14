@@ -1,6 +1,7 @@
 const express = require('express');
 const moment = require("moment");
 const Message = require('../models/message');
+const Hashtag = require('../models/hashtag');
 const Board = require('../models/board');
 const Gallery = require('../models/gallery');
 const User = require('../models/user');
@@ -20,30 +21,35 @@ router.get('/join', isNotLoggedIn, (req, res) => {
 
 router.get('/', async (req, res, next) => {
   var message;
-  console.log("--------USER---------")
-  console.log(req.user);
+ 
   if(req.user){
-    console.log("-----FIND MESSAGE-------")
     message = await Message.find({ to: req.user.UserId}).sort({date: -1});;
   }
-  console.log(message);
   res.render('main', {
     title: "HOME",
     messages: message
   });
 });
+router.post('/message/delete', isLoggedIn, async(req,res,next)=>{
+  try{
+    await Message.deleteOne({ _id: req.body._id });
+    res.redirect('back');
+
+  }catch(err){
+    console.error(err);
+    next(err);
+  }
+});
 
 router.post('/message', isLoggedIn, async(req, res, next) => {
   try{
-    console.log(req.body);
-    console.log(req.user);
     const exUser = await User.findOne( {UserId:req.body.to });
     if(!exUser){
       const message= encodeURIComponent('없는 사용자입니다.');
       res.redirect(`./?loginError=${message}`);
     }else{
       var date = moment(Date.now()).format('YYYY MMMM Do , hh:mma');
-      const message = await Message.create({
+      await Message.create({
         from: req.user.UserId,
         to: req.body.to,
         message: req.body.message,
@@ -60,37 +66,40 @@ router.post('/message', isLoggedIn, async(req, res, next) => {
 
 router.get('/search', async (req, res, next) => {
   const query = req.query.search;
-  
-  console.log("printf query : " + req.query.search);
+  const type = req.query.type;
+  var board;
+  var gallery;
+ 
   if (!query) {
     return res.redirect('/');
   }
   try {
-    //작성자 검색
-    const boardWriter = await Board.find({ writer: query});
-    const galleryWriter = await Gallery.find( { writer: query });
-    //내용 검색
-    const boardContent = await Board.find({ content: {$regex: query}});
-    const galleryContent = await Gallery.find({ content: {$regex: query}});
-    //HASH TAG 검색
-   // posts= await Image.find({content:{$regex: '.*#'+query+'.*'}});
+    if(type === "content"){
+      //내용 검색
+      
+      board = await Board.find({ content: {$regex: query}});
+      gallery = await Gallery.find({ content: {$regex: query}});
+    }else if(type === "writer"){
+      //작성자 검색
     
-    //검색 결과 객체 합치기
-    const board = Object.assign(boardWriter, boardContent);
-    const gallery = Object.assign(galleryWriter, galleryContent);
+      board = await Board.find({ writer: query});
+      gallery = await Gallery.find( { writer: query });
+    }else{
+      //HASH TAG 검색
+      const hashtag = await Hashtag.findOne({ title: query  });
     
+      if (hashtag) {
+        board = await Board.find( {content:{$regex: '.*#'+query+'.*'}});
+        gallery = await Gallery.find( {content:{$regex: '.*#'+query+'.*'}});
+      }
+    }
     
-    const hashtag = await Hashtag.findOne({ title: query  });
-    /*
-    let posts = [];
-    if (hashtag) {
-      posts = await hashtag.getPosts({ include: [{ model: User }] });
-    }*/
-
     return res.render('main', {
-      title: `${query} | HOME`,
+      title: `${type} | ${query} | 검색결과`,
       boards: board,
-      galleris: gallery
+      galleris: gallery,
+      type: type,
+      query: query,
     });
 
   } catch (error) {
